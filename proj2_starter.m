@@ -1,10 +1,10 @@
 % starter script for project 3
-DO_TOY = true;
-DO_BLEND = false;
+DO_TOY = false;
+DO_BLEND = true;
 DO_MIXED  = false;
 DO_COLOR2GRAY = false;
 
-if DO_TOY 
+if DO_TOY
     toyim = im2double(imread('./samples/toy_problem.png')); 
     % im_out should be approximately the same as toyim
     im_out = toy_reconstruct(toyim);   % you need to write this function, toy_reconstruct
@@ -13,8 +13,10 @@ end
 
 if DO_BLEND
     % do a small one first, while debugging
-    im_background = imresize(im2double(imread('./samples/im2.jpg')), 0.25, 'bilinear');
-    im_object = imresize(im2double(imread('./samples/penguin-chick.jpeg')), 0.25, 'bilinear');
+    
+    % Originally 0.25 - change me back
+    im_background = imresize(im2double(imread('./samples/im2.jpg')), 0.05, 'bilinear');
+    im_object = imresize(im2double(imread('./samples/penguin-chick.jpeg')), 0.05, 'bilinear');
 
     % get source region mask from the user
     objmask = getMask(im_object);
