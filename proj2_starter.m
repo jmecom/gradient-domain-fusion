@@ -1,4 +1,4 @@
-% starter script for project 3
+% starter script for project 2
 DO_TOY = false;
 DO_BLEND = true;
 DO_MIXED  = false;
@@ -13,10 +13,9 @@ end
 
 if DO_BLEND
     % do a small one first, while debugging
-    
-    % Originally 0.25 - change me back
-    im_background = imresize(im2double(imread('./samples/im2.jpg')), 0.05, 'bilinear');
-    im_object = imresize(im2double(imread('./samples/penguin-chick.jpeg')), 0.05, 'bilinear');
+   
+    im_background = imresize(im2double(imread('./samples/im2.jpg')), 0.25, 'bilinear');
+    im_object = imresize(im2double(imread('./samples/penguin-chick.jpeg')), 0.25, 'bilinear');
 
     % get source region mask from the user
     objmask = getMask(im_object);
@@ -29,8 +28,13 @@ if DO_BLEND
 end
 
 if DO_MIXED
-    % read images
-    %...
+    im_background = im2double(imread('./samples/brick-wall.jpg'));
+    im_object = imresize(im2double(imread('./samples/dd.jpg')), 0.9, 'bilinear');
+
+    % get source region mask from the user
+    objmask = getMask(im_object);
+    % align im_s and mask_s with im_background
+    [im_s, mask_s] = alignSource(im_object, objmask, im_background);
     
     % blend
     im_blend = mixedBlend(im_s, mask_s, im_background);     % you need to write this.

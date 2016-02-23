@@ -1,5 +1,5 @@
-function [ im_blend ] = poissonBlend( im_source, mask, im_bg )
-%POISSONBLEND
+function [ im_blend ] = mixedBlend( im_source, mask, im_bg )
+%MIXEDBLEND
 
 [source_h, source_w, ~] = size(im_source);
 [bg_h, bg_w, ~] = size(im_bg);
@@ -46,7 +46,15 @@ for channel = 1:3
           sparse_j = [sparse_j im2var(y-1,x)];
           sparse_k = [sparse_k -1];
           
-          b(e) = im_source(y,x) - im_source(y-1,x);
+          source_grad = im_source(y,x) - im_source(y-1,x);
+          target_grad = im_bg(y,x) - im_bg(y-1,x);
+          
+          if abs(source_grad) > abs(target_grad)
+            b(e) = source_grad;
+          else
+            b(e) = target_grad;
+          end          
+          
           e = e + 1;
         end
         
@@ -60,7 +68,15 @@ for channel = 1:3
           sparse_j = [sparse_j im2var(y+1,x)];
           sparse_k = [sparse_k -1];
           
-          b(e) = im_source(y,x) - im_source(y+1,x);
+          source_grad = im_source(y,x) - im_source(y+1,x);
+          target_grad = im_bg(y,x) - im_bg(y+1,x);
+          
+          if abs(source_grad) > abs(target_grad)
+            b(e) = source_grad;
+          else
+            b(e) = target_grad;
+          end 
+          
           e = e + 1;
         end
         
@@ -75,7 +91,15 @@ for channel = 1:3
           sparse_j = [sparse_j im2var(y,x+1)];
           sparse_k = [sparse_k -1];
           
-          b(e) = im_source(y,x) - im_source(y,x+1);
+          source_grad = im_source(y,x) - im_source(y,x+1);
+          target_grad = im_bg(y,x) - im_bg(y,x+1);
+          
+          if abs(source_grad) > abs(target_grad)
+            b(e) = source_grad;
+          else
+            b(e) = target_grad;
+          end 
+          
           e = e + 1;
         end
         
@@ -89,7 +113,15 @@ for channel = 1:3
           sparse_j = [sparse_j im2var(y,x-1)];
           sparse_k = [sparse_k -1];
           
-          b(e) = im_source(y,x) - im_source(y,x-1);
+          source_grad = im_source(y,x) - im_source(y,x-1);
+          target_grad = im_bg(y,x) - im_bg(y,x-1);
+          
+          if abs(source_grad) > abs(target_grad)
+            b(e) = source_grad;
+          else
+            b(e) = target_grad;
+          end 
+          
           e = e + 1;
         end
       end
