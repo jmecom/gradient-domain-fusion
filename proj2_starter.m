@@ -1,8 +1,9 @@
 % starter script for project 2
 DO_TOY = false;
-DO_BLEND = true;
+DO_BLEND = false;
 DO_MIXED  = false;
 DO_COLOR2GRAY = false;
+DO_NPR = true;
 
 if DO_TOY
     toyim = im2double(imread('./samples/toy_problem.png')); 
@@ -47,3 +48,10 @@ if DO_COLOR2GRAY
     im_gr = color2gray(im_rgb);
     figure(4), hold off, imagesc(im_gr), axis image, colormap gray
 end
+
+if DO_NPR
+  im_input = im2double(imread('./samples/baseball.png'));
+  im_npr = npr(im_input);
+  imshow(im_npr);
+end
+
