@@ -6,8 +6,8 @@ im_gray = rgb2gray(im);
 [ux, uy] = imgradientxy(im_gray);
 
 % Application specific filtering: non-photo realism
-% e = edge(im_gray, 'canny', 0.3, 4);
-e = edge(im_gray, 'canny');
+% e = edge(im_gray, 'canny');
+e = sqrt(ux.*ux + uy.*uy);    % more like GradientShop
 
 gx = e .* ux; % Desired pixel-differences: x dir
 gy = e .* uy; % Desired pixel-differences: y dir
@@ -110,8 +110,18 @@ for channel = 1:3
   
 end
 
+% outlines = imcomplement(sqrt(ux.*ux + uy.*uy));
+filterx = d2dgauss(10, 1, 10, 1, pi/2);
+filtery = d2dgauss(10, 1, 10, 1, 0);
+
+Ix = conv2(im_gray, filterx, 'same');
+Iy = conv2(im_gray, filtery, 'same');
+outlines = imcomplement(sqrt(Ix.*Ix + Iy.*Iy));
+
+  
 for c = 1:3
   im_npr(:,:,c) = reshape(f_rgb{c}, [height width]);
+  im_npr(:,:,c) = im_npr(:,:,c) - (1-outlines(:,:));
 end
 
 end
