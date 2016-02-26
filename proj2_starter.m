@@ -1,9 +1,9 @@
 % starter script for project 2
 DO_TOY = false;
 DO_BLEND = false;
-DO_MIXED  = false;
+DO_MIXED  = true;
 DO_COLOR2GRAY = false;
-DO_NPR = true;
+DO_NPR = false;
 
 if DO_TOY
     toyim = im2double(imread('./samples/toy_problem.png')); 
@@ -15,8 +15,8 @@ end
 if DO_BLEND
     % do a small one first, while debugging
    
-    im_background = imresize(im2double(imread('./samples/im2.jpg')), 0.25, 'bilinear');
-    im_object = imresize(im2double(imread('./samples/penguin-chick.jpeg')), 0.25, 'bilinear');
+    im_background = imresize(im2double(imread('./samples/mill-valley.jpg')), 0.25, 'bilinear');
+    im_object = imresize(im2double(imread('./samples/shiba.jpg')), 0.35, 'bilinear');
 
     % get source region mask from the user
     objmask = getMask(im_object);
@@ -29,8 +29,8 @@ if DO_BLEND
 end
 
 if DO_MIXED
-    im_background = im2double(imread('./samples/brick-wall.jpg'));
-    im_object = imresize(im2double(imread('./samples/dd.jpg')), 0.9, 'bilinear');
+    im_background = imresize(im2double(imread('./samples/mill-valley.jpg')), 0.25, 'bilinear');
+    im_object = imresize(im2double(imread('./samples/shiba.jpg')), 0.35, 'bilinear');
 
     % get source region mask from the user
     objmask = getMask(im_object);
@@ -50,8 +50,9 @@ if DO_COLOR2GRAY
 end
 
 if DO_NPR
-  im_input = im2double(imread('./samples/baseball.png'));
+  im_input = im2double(imread('./samples/dog.JPG'));
   im_npr = npr(im_input);
   imshow(im_npr);
+%   imwrite(im_npr, './samples/output/asdf.jpg');
 end
 
