@@ -1,7 +1,7 @@
 % starter script for project 2
 DO_TOY = false;
-DO_BLEND = true;
-DO_MIXED  = false;
+DO_BLEND = false;
+DO_MIXED  = true;
 DO_COLOR2GRAY = false;
 DO_NPR = false;
 
@@ -29,8 +29,10 @@ if DO_BLEND
 end
 
 if DO_MIXED
-    im_background = imresize(im2double(imread('./samples/beach.jpg')), 0.99, 'bilinear');
-    im_object = imresize(im2double(imread('./samples/rainbow.jpg')), 0.99, 'bilinear');
+%     im_background = imresize(im2double(imread('./samples/brick-wall.jpg')), 0.99, 'bilinear');
+%     im_object = imresize(im2double(imread('./samples/dd.jpg')), 0.99, 'bilinear');
+    im_background = imresize(im2double(imread('./samples/target_01.jpg')), 0.99, 'bilinear');
+    im_object = imresize(im2double(imread('./samples/source_01.jpg')), 0.99, 'bilinear');
 
     % get source region mask from the user
     objmask = getMask(im_object);

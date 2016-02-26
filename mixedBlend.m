@@ -1,5 +1,5 @@
 function [ im_blend ] = mixedBlend( im_source, mask, im_bg )
-%MIXEDBLEND
+%POISSONBLEND
 
 [source_h, source_w, ~] = size(im_source);
 [bg_h, bg_w, ~] = size(im_bg);
@@ -12,7 +12,7 @@ im2var(1:bg_pixel_count) = 1:bg_pixel_count;
 % Number of identity equations
 num_equations = bg_pixel_count - source_pixel_count;
 % Number of blending equations
-num_equations = num_equations + 4*(source_pixel_count);
+num_equations = num_equations + 4*(source_pixel_count) - (2*bg_h + 2*bg_w);
 
 v_rgb = {};
 
@@ -42,9 +42,11 @@ for c = 1:3
           sparse_j = [sparse_j im2var(y,x)];
           sparse_k = [sparse_k 1];
           
-          sparse_i = [sparse_i e];
-          sparse_j = [sparse_j im2var(y-1,x)];
-          sparse_k = [sparse_k -1];
+          if mask(y-1, x)
+            sparse_i = [sparse_i e];
+            sparse_j = [sparse_j im2var(y-1,x)];
+            sparse_k = [sparse_k -1];
+          end
           
           source_grad = im_source(y,x,c) - im_source(y-1,x,c);
           target_grad = im_bg(y,x,c) - im_bg(y-1,x,c);
@@ -53,7 +55,11 @@ for c = 1:3
             b(e) = source_grad;
           else
             b(e) = target_grad;
-          end          
+          end
+          
+          if ~mask(y-1,x)
+            b(e) = b(e) + im_bg(y-1,x,c);
+          end
           
           e = e + 1;
         end
@@ -64,9 +70,11 @@ for c = 1:3
           sparse_j = [sparse_j im2var(y,x)];
           sparse_k = [sparse_k 1];
           
-          sparse_i = [sparse_i e];
-          sparse_j = [sparse_j im2var(y+1,x)];
-          sparse_k = [sparse_k -1];
+          if mask(y+1, x)
+            sparse_i = [sparse_i e];
+            sparse_j = [sparse_j im2var(y+1,x)];
+            sparse_k = [sparse_k -1];
+          end
           
           source_grad = im_source(y,x,c) - im_source(y+1,x,c);
           target_grad = im_bg(y,x,c) - im_bg(y+1,x,c);
@@ -77,6 +85,10 @@ for c = 1:3
             b(e) = target_grad;
           end 
           
+          if ~mask(y+1,x)
+            b(e) = b(e) + im_bg(y+1,x,c);
+          end
+          
           e = e + 1;
         end
         
@@ -86,10 +98,11 @@ for c = 1:3
           sparse_j = [sparse_j im2var(y,x)];
           sparse_k = [sparse_k 1];
           
-          
-          sparse_i = [sparse_i e];
-          sparse_j = [sparse_j im2var(y,x+1)];
-          sparse_k = [sparse_k -1];
+          if mask(y, x+1)
+            sparse_i = [sparse_i e];
+            sparse_j = [sparse_j im2var(y,x+1)];
+            sparse_k = [sparse_k -1];
+          end
           
           source_grad = im_source(y,x,c) - im_source(y,x+1,c);
           target_grad = im_bg(y,x,c) - im_bg(y,x+1,c);
@@ -98,7 +111,11 @@ for c = 1:3
             b(e) = source_grad;
           else
             b(e) = target_grad;
-          end 
+          end
+          
+          if ~mask(y,x+1)
+            b(e) = b(e) + im_bg(y,x+1,c);
+          end
           
           e = e + 1;
         end
@@ -109,9 +126,11 @@ for c = 1:3
           sparse_j = [sparse_j im2var(y,x)];
           sparse_k = [sparse_k 1];
           
-          sparse_i = [sparse_i e];
-          sparse_j = [sparse_j im2var(y,x-1)];
-          sparse_k = [sparse_k -1];
+          if mask(y, x-1)
+            sparse_i = [sparse_i e];
+            sparse_j = [sparse_j im2var(y,x-1)];
+            sparse_k = [sparse_k -1];
+          end
           
           source_grad = im_source(y,x,c) - im_source(y,x-1,c);
           target_grad = im_bg(y,x,c) - im_bg(y,x-1,c);
@@ -121,6 +140,10 @@ for c = 1:3
           else
             b(e) = target_grad;
           end 
+          
+          if ~mask(y,x-1)
+            b(e) = b(e) + im_bg(y,x-1,c);
+          end
           
           e = e + 1;
         end
