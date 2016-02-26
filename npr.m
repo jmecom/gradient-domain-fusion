@@ -106,7 +106,7 @@ for c = 1:3
       sparse_j = [sparse_j im2var(y,x)];
       sparse_k = [sparse_k 1];
       
-      b(e) = d(y,x,channel);
+      b(e) = d(y,x,c);
       e = e + 1;
     end
   end
