@@ -34,7 +34,7 @@ im2var(1:pixel_count) = 1:pixel_count;
 
 f_rgb = {}; % Output filtered image
 
-for channel = 1:3
+for c = 1:3
   sparse_i = [];
   sparse_j = [];
   sparse_k = [];

@@ -16,7 +16,7 @@ num_equations = num_equations + 4*(source_pixel_count);
 
 v_rgb = {};
 
-for channel = 1:3
+for c = 1:3
   sparse_i = [];
   sparse_j = [];
   sparse_k = [];
@@ -32,7 +32,7 @@ for channel = 1:3
         sparse_j = [sparse_j im2var(y,x)];
         sparse_k = [sparse_k 1];
         
-        b(e) = im_bg(y, x, channel);
+        b(e) = im_bg(y, x, c);
         e = e + 1;
       else
         % Neighbor Equations
@@ -46,8 +46,8 @@ for channel = 1:3
           sparse_j = [sparse_j im2var(y-1,x)];
           sparse_k = [sparse_k -1];
           
-          source_grad = im_source(y,x) - im_source(y-1,x);
-          target_grad = im_bg(y,x) - im_bg(y-1,x);
+          source_grad = im_source(y,x,c) - im_source(y-1,x,c);
+          target_grad = im_bg(y,x,c) - im_bg(y-1,x,c);
           
           if abs(source_grad) > abs(target_grad)
             b(e) = source_grad;
@@ -68,8 +68,8 @@ for channel = 1:3
           sparse_j = [sparse_j im2var(y+1,x)];
           sparse_k = [sparse_k -1];
           
-          source_grad = im_source(y,x) - im_source(y+1,x);
-          target_grad = im_bg(y,x) - im_bg(y+1,x);
+          source_grad = im_source(y,x,c) - im_source(y+1,x,c);
+          target_grad = im_bg(y,x,c) - im_bg(y+1,x,c);
           
           if abs(source_grad) > abs(target_grad)
             b(e) = source_grad;
@@ -91,8 +91,8 @@ for channel = 1:3
           sparse_j = [sparse_j im2var(y,x+1)];
           sparse_k = [sparse_k -1];
           
-          source_grad = im_source(y,x) - im_source(y,x+1);
-          target_grad = im_bg(y,x) - im_bg(y,x+1);
+          source_grad = im_source(y,x,c) - im_source(y,x+1,c);
+          target_grad = im_bg(y,x,c) - im_bg(y,x+1,c);
           
           if abs(source_grad) > abs(target_grad)
             b(e) = source_grad;
@@ -113,8 +113,8 @@ for channel = 1:3
           sparse_j = [sparse_j im2var(y,x-1)];
           sparse_k = [sparse_k -1];
           
-          source_grad = im_source(y,x) - im_source(y,x-1);
-          target_grad = im_bg(y,x) - im_bg(y,x-1);
+          source_grad = im_source(y,x,c) - im_source(y,x-1,c);
+          target_grad = im_bg(y,x,c) - im_bg(y,x-1,c);
           
           if abs(source_grad) > abs(target_grad)
             b(e) = source_grad;
@@ -129,7 +129,7 @@ for channel = 1:3
   end
   
   A = sparse(sparse_i, sparse_j, sparse_k, num_equations, bg_pixel_count);
-  v_rgb{channel} = A\b;
+  v_rgb{c} = A\b;
 end
 
 for c = 1:3

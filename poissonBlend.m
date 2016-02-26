@@ -12,7 +12,7 @@ im2var(1:bg_pixel_count) = 1:bg_pixel_count;
 % Number of identity equations
 num_equations = bg_pixel_count - source_pixel_count;
 % Number of blending equations
-num_equations = num_equations + 4*(source_pixel_count);
+num_equations = num_equations + 4*(source_pixel_count) - (2*bg_h + 2*bg_w);
 
 v_rgb = {};
 
@@ -46,7 +46,7 @@ for channel = 1:3
           sparse_j = [sparse_j im2var(y-1,x)];
           sparse_k = [sparse_k -1];
           
-          b(e) = im_source(y,x) - im_source(y-1,x);
+          b(e) = im_source(y,x, channel) - im_source(y-1,x, channel);
           e = e + 1;
         end
         
@@ -60,7 +60,7 @@ for channel = 1:3
           sparse_j = [sparse_j im2var(y+1,x)];
           sparse_k = [sparse_k -1];
           
-          b(e) = im_source(y,x) - im_source(y+1,x);
+          b(e) = im_source(y,x, channel) - im_source(y+1,x, channel);
           e = e + 1;
         end
         
@@ -75,7 +75,7 @@ for channel = 1:3
           sparse_j = [sparse_j im2var(y,x+1)];
           sparse_k = [sparse_k -1];
           
-          b(e) = im_source(y,x) - im_source(y,x+1);
+          b(e) = im_source(y,x, channel) - im_source(y,x+1, channel);
           e = e + 1;
         end
         
@@ -89,7 +89,7 @@ for channel = 1:3
           sparse_j = [sparse_j im2var(y,x-1)];
           sparse_k = [sparse_k -1];
           
-          b(e) = im_source(y,x) - im_source(y,x-1);
+          b(e) = im_source(y,x, channel) - im_source(y,x-1, channel);
           e = e + 1;
         end
       end
