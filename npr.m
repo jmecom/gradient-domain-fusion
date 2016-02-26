@@ -3,24 +3,18 @@ function [ im_npr ] = npr( im )
 
 % Inputs
 im_gray = rgb2gray(im);
-filterx = d2dgauss(10, 1, 10, 1, pi/2);
-filtery = d2dgauss(10, 1, 10, 1, 0);
+fx = getedge(10, 1, 10, 1, pi/2);
+fy = getedge(10, 1, 10, 1, 0);
 
-ux = conv2(im_gray, filterx, 'same');
-uy = conv2(im_gray, filtery, 'same');
-
-% [ux, uy] = imgradientxy(im_gray);
+ux = conv2(im_gray, fx, 'same');
+uy = conv2(im_gray, fy, 'same');
 
 % Application specific filtering: non-photo realism
-% e = edge(im_gray, 'canny');
 e = sqrt(ux.*ux + uy.*uy);    % more like GradientShop
 
 gx = e .* ux; % Desired pixel-differences: x dir
 gy = e .* uy; % Desired pixel-differences: y dir
 d  = im;      % Desired pixel values
-% wx = 1;       % Weights
-% wy = 1;
-% wd = 1;
 
 % Using the above constraints, the goal is to solve
 %   min_{f} { wx(fx - gx)^2 + wy(fy - gy)^2 + wd(f - d)^2
@@ -112,14 +106,10 @@ for c = 1:3
   end
   
   A = sparse(sparse_i, sparse_j, sparse_k, num_equations, pixel_count);
-  f_rgb{channel} = A\b;
+  f_rgb{c} = A\b;
   
 end
 
-% outlines = imcomplement(sqrt(ux.*ux + uy.*uy));
-
-% Ix = conv2(im_gray, filterx, 'same');
-% Iy = conv2(im_gray, filtery, 'same');
 outlines = imcomplement(sqrt(ux.*ux + uy.*uy));
 
 for c = 1:3
